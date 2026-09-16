@@ -19,12 +19,16 @@ const transaction_module_1 = require("./transaction/transaction.module");
 const transfer_module_1 = require("./transfer/transfer.module");
 const admin_module_1 = require("./admin/admin.module");
 const transaction_loader_1 = require("./transaction/transaction.loader");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
             graphql_1.GraphQLModule.forRootAsync({
                 driver: apollo_1.ApolloDriver,
                 imports: [prisma_module_1.PrismaModule],

@@ -10,11 +10,13 @@ import { TransactionModule } from './transaction/transaction.module';
 import { TransferModule } from './transfer/transfer.module';
 import { AdminModule } from './admin/admin.module';
 import { createWalletLoader } from './transaction/transaction.loader';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    
-    
+      ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [PrismaModule],
@@ -23,11 +25,6 @@ import { createWalletLoader } from './transaction/transaction.loader';
         
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
-
-        
-        
-        
-        
         
         context: ({ req, res }) => ({
           req,

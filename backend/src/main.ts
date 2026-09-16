@@ -15,13 +15,14 @@ async function bootstrap() {
 
   
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL,
     credentials: true, 
   });
+const port = process.env.PORT || 3001;
 
-  await app.listen(3001);
-  console.log('🚀 Backend running at http://localhost:3001');
-  console.log('📊 GraphQL playground at http://localhost:3001/graphql');
+  await app.listen(port);
+  console.log(`🚀 Backend running at http://localhost:${port}`);
+  console.log(`📊 GraphQL playground at http://localhost:${port}/graphql`);
 }
 
 bootstrap();
