@@ -1,0 +1,99 @@
+
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String?
+  mobile    String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wallet    Wallet?
+}
+
+model Wallet {
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+  balance   Float   @default(0)
+  isFrozen  Boolean @default(false)
+
+
+  sentTransactions     Transaction[] @relation("SenderWallet")
+  receivedTransactions Transaction[] @relation("ReceiverWallet")
+
+  ledgerEntries LedgerEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  @@index([userId])
+}
+
+model Transaction {
+  id             String  @id @default(uuid())
+  amount         Float
+  currency       String  @default("USD")
+  status         String  @default("PENDING")
+
+
+  idempotencyKey String  @unique
+
+  senderWalletId   String
+  senderWallet     Wallet @relation("SenderWallet", fields: [senderWalletId], references: [id])
+
+  receiverWalletId String
+  receiverWallet   Wallet @relation("ReceiverWallet", fields: [receiverWalletId], references: [id])
+
+  ledgerEntries LedgerEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+
+
+  @@index([senderWalletId, createdAt])
+  @@index([receiverWalletId, createdAt])
+}
+
+
+
+
+
+
+model LedgerEntry {
+  id            String   @id @default(uuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  walletId      String
+  wallet        Wallet   @relation(fields: [walletId], references: [id])
+
+  type          String
+  amount        Float
+
+  createdAt     DateTime @default(now())
+
+
+  @@index([walletId])
+  @@index([transactionId])
+}

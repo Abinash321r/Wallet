@@ -1,0 +1,131 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AdminUser {
+  createdAt: DateTime!
+  id: String!
+  mobile: String!
+  name: String
+  role: String!
+  wallet: AdminWalletInfo
+}
+
+type AdminWalletInfo {
+  balance: Float!
+  id: String!
+  isFrozen: Boolean!
+}
+
+type AuthUser {
+  id: String!
+  mobile: String!
+  name: String
+  role: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  mobile: String!
+  password: String!
+}
+
+type Mutation {
+  """Admin: delete a user and all their data"""
+  adminDeleteUser(userId: String!): Boolean!
+
+  """Admin: freeze a user wallet"""
+  adminFreezeWallet(walletId: String!): WalletType!
+
+  """Admin: promote a user to admin role"""
+  adminMakeAdmin(userId: String!): AdminUser!
+
+  """Admin: unfreeze a user wallet"""
+  adminUnfreezeWallet(walletId: String!): WalletType!
+
+  """Add dummy funds to your wallet (demo only)"""
+  deposit(amount: Float!): WalletType!
+
+  """Login and receive a JWT stored in an HttpOnly cookie"""
+  login(input: LoginInput!): AuthUser!
+
+  """Logout and clear the auth cookie"""
+  logout: Boolean!
+
+  """Register a new user with a 10-digit mobile number"""
+  register(input: RegisterInput!): Boolean!
+
+  """Transfer money to another user by their mobile number"""
+  transfer(input: TransferInput!): TransactionType!
+}
+
+type PaginatedAdminUsers {
+  page: Int!
+  total: Int!
+  totalPages: Int!
+  users: [AdminUser!]!
+}
+
+type PaginatedTransactions {
+  hasMore: Boolean!
+  nextCursor: String
+  transactions: [TransactionType!]!
+}
+
+type Query {
+  """Admin: view all transactions"""
+  adminTransactions: [TransactionType!]!
+
+  """Admin: list users with search, filter, sort, and pagination"""
+  adminUsers(limit: Int! = 10, page: Int! = 1, roleFilter: String, search: String, sortBy: String, sortOrder: String): PaginatedAdminUsers!
+
+  """Get the currently logged-in user"""
+  me: AuthUser!
+
+  """Get paginated transactions for the logged-in user"""
+  myTransactions(cursor: String, dateFilter: String, limit: Int! = 20): PaginatedTransactions!
+
+  """Get the wallet of the currently logged-in user"""
+  myWallet: WalletType!
+}
+
+input RegisterInput {
+  mobile: String!
+  name: String
+  password: String!
+}
+
+type TransactionType {
+  amount: Float!
+  createdAt: DateTime!
+  currency: String!
+  id: String!
+  receiverWallet: WalletSummary
+  receiverWalletId: String!
+  senderWallet: WalletSummary
+  senderWalletId: String!
+  status: String!
+}
+
+input TransferInput {
+  amount: Float!
+  idempotencyKey: String!
+  receiverMobile: String!
+}
+
+type WalletSummary {
+  balance: Float!
+  id: String!
+}
+
+type WalletType {
+  balance: Float!
+  createdAt: DateTime!
+  id: String!
+  isFrozen: Boolean!
+  updatedAt: DateTime!
+}
