@@ -69,7 +69,14 @@ export class AuthService {
 
   async logout(res: Response): Promise<boolean> {
     
-    res.clearCookie('auth_token');
+    // res.clearCookie('auth_token');
+      res.clearCookie('auth_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
+  });
+
     return true;
   }
 

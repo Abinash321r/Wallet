@@ -55,7 +55,12 @@ let AuthService = class AuthService {
         return { id: user.id, name: user.name, mobile: user.mobile, role: user.role };
     }
     async logout(res) {
-        res.clearCookie('auth_token');
+        res.clearCookie('auth_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            path: '/',
+        });
         return true;
     }
     async getMe(userId) {
