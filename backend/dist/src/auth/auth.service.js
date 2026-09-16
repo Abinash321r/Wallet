@@ -49,7 +49,7 @@ let AuthService = class AuthService {
         res.cookie('auth_token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
         return { id: user.id, name: user.name, mobile: user.mobile, role: user.role };

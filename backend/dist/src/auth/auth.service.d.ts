@@ -11,9 +11,9 @@ export declare class AuthService {
     login(input: LoginInput, res: Response): Promise<any>;
     logout(res: Response): Promise<boolean>;
     getMe(userId: string): Promise<{
-        name: string;
-        mobile: string;
         id: string;
+        mobile: string;
+        name: string;
         role: import(".prisma/client").$Enums.Role;
     }>;
 }
